@@ -1,0 +1,31 @@
+{
+  "name": "cordova-plugin-captureid",
+  "version": "1.0.17",
+  "cordova": {
+    "id": "cortexdecoder-code-scanner",
+    "platforms": [
+      "android"
+    ]
+  },
+  "description": "Cortex Barcode Decoder",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/P4IT/cordova-plugin-cortex-decoder.git"
+  },
+  "keywords": [
+    "cordova",
+    "android",
+    "code",
+    "cortex",
+    "barcode",
+    "scanner",
+    "ecosystem:cordova",
+    "cordova-android"
+  ],
+  "author": "Uwe Hoppe, Christian Jung",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/P4IT/cordova-plugin-cortex-decoder/issues"
+  },
+  "homepage": "https://github.com/P4IT/cordova-plugin-cortex-decoder#readme"
+}

@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
+    id="cordova-plugin-captureid"
+    version="1.0.17">
+    <name>Code BarcodeScanner</name>
+    <description>Barcode Decoder Plugin for Cortex Decoder Library</description>
+    <license>MIT</license>
+    <repo>https://github.com/P4IT/cordova-plugin-cortex-decoder</repo>
+    <issue>https://github.com/P4IT/cordova-plugin-cortex-decoder/issues</issue>
+    <author>Christian Jung, Uwe Hoppe</author>
+    <keywords>cordova,android,code,cortex,barcode,scanner</keywords>
+
+    <js-module src="www/codePlugin.js" name="CortexDecoderPlugin">
+      <runs/>
+      <!-- This is the window variable name you want, like window.MyCordovaPlugin -->
+      <clobbers target="cordova.plugins.cortexdecoder" />
+    </js-module>
+    <js-module src="www/symbologies.js" name="Symbologies">
+      <runs/>
+      <clobbers target="cordova.plugins.cortexdecoder.symbologies" />
+    </js-module>
+    <js-module src="www/camerabuttons.js" name="CameraButtons">
+      <runs/>
+      <clobbers target="cordova.plugins.cortexdecoder.camerabuttons" />
+    </js-module>
+
+    <!-- android -->
+    <platform name="android">
+      <source-file src="src/android/app/captureid/decoder/CaptureIDDecoder.java" target-dir="src/app/captureid/decoder/" />
+      <resource-file src="src/android/res/cortexdecoderlibrary.xml" target="res/layout/cortexdecoderlibrary.xml" />
+      <resource-file src="src/android/res/ic_close_black_24dp.xml" target="res/drawable/ic_close_black_24dp.xml" />
+      <resource-file src="src/android/res/ic_highlight_black_24dp.xml" target="res/drawable/ic_highlight_black_24dp.xml" />
+      <resource-file src="src/android/res/ic_linked_camera_black_24dp.xml" target="res/drawable/ic_linked_camera_black_24dp.xml" />
+      <resource-file src="src/android/res/ic_swap_vert_black_24dp.xml" target="res/drawable/ic_swap_vert_black_24dp.xml" />
+      <resource-file src="src/android/res/roundbutton.xml" target="res/drawable/roundbutton.xml" />
+      <resource-file src="src/key-file.txt" target="assets/key-file.txt"/>
+      <config-file target="res/xml/config.xml" parent="/*">
+        <feature name="CaptureIDDecoder">
+          <param name="android-package" value="app.captureid.decoder.CaptureIDDecoder" />
+          <param name="onload" value="true" />
+        </feature>
+      </config-file>
+      <config-file target="AndroidManifest.xml" parent="/manifest">
+        <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+        <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+        <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+        <uses-permission android:name="android.permission.INTERNET" />
+        <uses-feature android:name="android.hardware.camera" />
+        <uses-feature android:name="android.hardware.camera.autofocus" />
+        <uses-feature android:name="android.hardware.sensor.accelerometer" />
+        <uses-permission android:name="android.permission.CAMERA" />
+        <uses-permission android:name="android.permission.VIBRATE" />
+      </config-file>
+      <framework src="src/android/cortex.gradle" custom="true" type="gradleReference"/>
+    <lib-file src="src/android/CortexDecoderLibrary.aar"/>
+    <lib-file src="src/android/CaptureIDLibrary.aar"/>
+    </platform>
+
+    <!-- ios -->
+    <platform name="ios">
+      <config-file target="config.xml" parent="/*">
+        <feature name="CaptureIDDecoder">
+          <param name="ios-package" value="CaptureIDDecoder" onload="true" />
+        </feature>
+      </config-file>
+      <preference name="CAMERA_USAGE_DESCRIPTION" default="This app needs camera access to read a barcode."/>
+      <config-file target="*-Info.plist" parent="NSCameraUsageDescription">
+        <string>$CAMERA_USAGE_DESCRIPTION</string>
+      </config-file>
+      <header-file src="src/ios/CaptureIDDecoder.h" />
+      <source-file src="src/ios/CaptureIDDecoder.m" />
+      <header-file src="src/ios/CPIDiOSCaptureIDLibrary.h"/>
+      <source-file src="src/ios/libiOS-CaptureID-Library.a" framework="true"/> 
+      <framework src="ImageIO.framework" weak="true" />
+      <framework src="MobileCoreServices.framework" />
+      <framework src="CoreLocation.framework" />
+      <framework src="CoreGraphics.framework" />
+      <framework src="AssetsLibrary.framework" />
+      <framework src="CoreGraphics.framework" />
+      <framework src="CoreImage.framework" />
+      <framework src="OpenGLES.framework" />
+      <framework src="GLKit.framework" />
+      <framework src="CoreVideo.framework" />
+      <framework src="QuartzCore.framework"/>
+      <framework src="libxml2.2.tbd" />
+      <resource-file src="src/key-file.txt"/>
+      <resource-file src="src/ios/baseline_highlight_white_18dp.png"/>
+    </platform>
+</plugin>

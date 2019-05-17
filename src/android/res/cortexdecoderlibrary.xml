@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/container_view">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/preview_view">
+
+    </FrameLayout>
+
+    <app.p4it.captureidlibrary.CrosshairView
+        android:id="@+id/crosshair_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="invisible" />
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <!--<ImageButton-->
+        <!--android:id="@+id/btn_1"-->
+        <!--android:layout_width="70dp"-->
+        <!--android:layout_height="70dp"-->
+        <!--android:layout_marginStart="8dp"-->
+        <!--android:layout_marginBottom="25dp"-->
+        <!--android:layout_gravity="bottom"-->
+        <!--android:adjustViewBounds="true"-->
+        <!--android:background="@drawable/roundbutton"-->
+        <!--android:padding="20dp"-->
+        <!--android:scaleType="fitCenter"-->
+        <!--android:visibility="invisible"-->
+        <!--app:layout_constraintBottom_toBottomOf="parent"-->
+        <!--app:layout_constraintStart_toStartOf="parent"-->
+        <!--/>-->
+
+        <!--<ImageButton-->
+        <!--android:id="@+id/btn_2"-->
+        <!--android:layout_width="70dp"-->
+        <!--android:layout_height="70dp"-->
+        <!--android:layout_marginStart="8dp"-->
+        <!--android:layout_marginBottom="25dp"-->
+        <!--android:layout_gravity="bottom"-->
+        <!--android:background="@drawable/roundbutton"-->
+        <!--android:padding="20dp"-->
+        <!--android:scaleType="fitCenter"-->
+        <!--android:visibility="invisible"-->
+        <!--app:layout_constraintBottom_toBottomOf="parent"-->
+        <!--app:layout_constraintStart_toEndOf="@+id/btn_1" />-->
+
+        <!--<ImageButton-->
+        <!--android:id="@+id/btn_3"-->
+        <!--android:layout_width="70dp"-->
+        <!--android:layout_height="70dp"-->
+        <!--android:layout_marginEnd="8dp"-->
+        <!--android:layout_marginBottom="25dp"-->
+        <!--android:layout_gravity="bottom"-->
+        <!--android:background="@drawable/roundbutton"-->
+        <!--android:padding="20dp"-->
+        <!--android:scaleType="fitCenter"-->
+        <!--android:visibility="invisible"-->
+        <!--app:layout_constraintBottom_toBottomOf="parent"-->
+        <!--app:layout_constraintEnd_toStartOf="@+id/btn_4" />-->
+
+        <!--<ImageButton-->
+        <!--android:id="@+id/btn_4"-->
+        <!--android:layout_width="70dp"-->
+        <!--android:layout_height="70dp"-->
+        <!--android:layout_marginEnd="8dp"-->
+        <!--android:layout_marginBottom="25dp"-->
+        <!--android:layout_gravity="bottom|right"-->
+        <!--android:adjustViewBounds="true"-->
+        <!--android:background="@drawable/roundbutton"-->
+        <!--android:padding="20dp"-->
+        <!--android:scaleType="fitCenter"-->
+        <!--android:visibility="invisible"-->
+        <!--app:layout_constraintBottom_toBottomOf="parent"-->
+        <!--app:layout_constraintEnd_toEndOf="parent" />-->
+        <app.p4it.captureidlibrary.CrosshairDotView
+            android:id="@+id/crosshairDotView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/btn_close"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="4dp"
+            android:background="@drawable/roundbutton"
+            android:text="X"
+            android:textColor="@android:color/background_light"
+            app:layout_constraintStart_toStartOf="@+id/crosshairDotView"
+            app:layout_constraintTop_toTopOf="@+id/crosshairDotView" />
+
+        <ImageButton
+            android:id="@+id/btn_flash_light"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="4dp"
+            android:background="@drawable/roundbutton"
+            app:layout_constraintEnd_toEndOf="@+id/crosshairDotView"
+            app:layout_constraintTop_toTopOf="@+id/crosshairDotView"
+            app:srcCompat="@drawable/ic_highlight_black_24dp" />
+
+    </android.support.constraint.ConstraintLayout>
+
+    <FrameLayout
+        android:layout_width="32dp"
+        android:layout_height="180dp"
+        android:orientation="vertical"
+        android:visibility="invisible">
+        <SeekBar
+            android:id="@+id/seekBarZoom"
+            android:layout_width="180dp"
+            android:layout_height="32dp"
+            android:layout_gravity="center"
+            android:rotation="270" />
+    </FrameLayout>
+</FrameLayout>
