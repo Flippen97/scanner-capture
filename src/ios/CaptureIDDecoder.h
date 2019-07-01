@@ -44,7 +44,7 @@
 //@property(nonatomic, assign) CD_SledAccessoryDeviceType accessoryDeviceType;
 
 - (void)initCaptureID:(CDVInvokedUrlCommand *)command;
-
+- (void)iOS_showAppSettings:(CDVInvokedUrlCommand *)command;
 // -- License -- //
 - (void)activateLicense:(CDVInvokedUrlCommand *)command;
 - (void)activateEDKLicense:(CDVInvokedUrlCommand *)command;

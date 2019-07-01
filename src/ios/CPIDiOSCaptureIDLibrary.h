@@ -13,10 +13,15 @@
 
 @property (nonatomic, strong)UIView * _Nonnull rootView;
 
--(_Nonnull instancetype)initWithUIview:(UIView * _Nonnull)rootView;
-//-(_Nonnull instancetype)init;
+//-(_Nonnull instancetype)initWithUIview:(UIView * _Nonnull)rootView;
+-(instancetype)initWithUIview:(UIView*)rootView resultBlock:(void (^ _Nonnull)(BOOL result))resultBlock;
 
 #pragma mark - License
+
+/*!
+ @discussion Show the App settings, this function is used by the developer, if the camera-permission is not granted.
+ */
+-(void) showAppSettings;
 
 /*!
  @discussion Activate the CortexDecoderLicense in CortexDecoder we need to check the Preferences for the Key.
@@ -32,10 +37,18 @@
  */
 -(void) activateEDKLicense:(NSString * _Nonnull)filename customerID:(NSString * _Nonnull)customerID resultHandler:(nonnull void (^)(NSArray * _Nonnull result))resultHandler;
 
-///**
-// @discussion Activate the CortexDecoderLicense in the CortexDecoder.
-// */
-//-(NSArray * _Nonnull) activateLicense;
+/*!
+ @discussion Activate the CortexDecoderLicense in CortexDecoder we need to check the Preferences for the Key.
+ @param key NSString  The CortexDecoderLicense
+ @param resultHandler (void (^)(NSArray *result))  We need a callback function, because the activateLicense is a async function
+ */
+-(void) activateEDKLicenseWithKey:(NSString * _Nonnull)edkKey customerID:(NSString * _Nonnull)customerID resultHandler:(nonnull void (^)(NSArray * _Nonnull result))resultHandler;
+
+/*!
+ @discussion Check the camera permission
+ @param resultBlock (void (^ _Nonnull)(BOOL result)) a callback that return true or false;
+ */
+-(void) checkCameraPermissionWithBlock:(void (^ _Nonnull)(BOOL result))resultBlock;
 
 /**
  @discussion Check if license is activated
@@ -84,7 +97,7 @@
  @return NSArray PluginResultObject
  todo keepcallback = yes
  */
--(NSArray * _Nonnull)startCameraPreview;
+-(NSArray * _Nonnull)startCameraPreview:(nonnull void (^)(BOOL result))resulthandler;
 
 /**
  @discussion Start Decoder KeepCallback = Yes

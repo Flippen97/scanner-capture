@@ -101,7 +101,7 @@ public class CaptureIDDecoder extends CordovaPlugin {
             "stopCameraPreview", "stopDecoding", "stringFromSymbologyType", "setSymbologyProperties",
             "setCameraButtons", "showCrossHair", "toggleCamera", "enableNativeZoom", "enableSeekBarZoom",
             "enableAugmentedReality", "ar_showVisualizeBarcodes", "ar_detectBarcode", "ar_showDetails",
-            "enableAllDecoders", "activateEDKLicense", "initCaptureID"));
+            "enableAllDecoders", "activateEDKLicense", "initCaptureID", "iOS_showAppSettings"));
 
     private boolean mIsCameraPreviewOn = false;
     private boolean mIsDecoderOn = false;
@@ -1043,7 +1043,8 @@ public class CaptureIDDecoder extends CordovaPlugin {
             break;
         case 65:
             this.mDecodeCallbackContext = callbackContext;
-            this.setSymbologyProperties(args);
+            this.mCaptureID.setSymbologyProperties(args);
+            // this.setSymbologyProperties(args);
             break;
         case 66:
             this.mDecodeCallbackContext = callbackContext;
@@ -1098,6 +1099,13 @@ public class CaptureIDDecoder extends CordovaPlugin {
             String message = initObj.getString("message");
             Boolean showMessageBox = initObj.getBoolean("showTextMessage");
             initCaptureID(message, showMessageBox);
+            return true;
+        case 78:
+            // iOS_showAppSettings
+            Log.d(TAG, "Function \"iOS_showAppSettings\"is not supported in Android");
+            res.setStringValue("Function is not supported in Android");
+            result = new PluginResult(PluginResult.Status.ERROR, res.toJSON());
+            callbackContext.sendPluginResult(result);
             return true;
         }
         result = new PluginResult(PluginResult.Status.OK, res.toJSON());

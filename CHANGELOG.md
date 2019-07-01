@@ -6,6 +6,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.21] - 2019-06-04
+### Fixed
+- iOS: send pluginResult in activateLicense
+
+## [1.0.20] - 2019-06-03
+### Changed
+- iOS: Added iOS library 1.0.14
+- iOS: Added iOS function only : "iOS_showAppSettings"
+
+## [1.0.19] - 2019-05-27
+### Changed
+- iOS: Added iOS library 1.0.13
+
+## [1.0.18] - 2019-05-15
+### Added
+- Android: Added Dotcode to the CaptureID lib.
+
+### Changed 
+- iOS: add new TIQ lib -> Version 3.2.0
+
 ## [1.0.17] - 2019-05-14
 ### Changed
 - Android: The camera start again when the user send the app to the background.

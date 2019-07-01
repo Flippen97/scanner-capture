@@ -1043,8 +1043,7 @@ function CortexDecoderLibrary() {
   };
 
   /**
-       * This method initialise the CaptureID Plugin and ask for runtimepermissions on Android.
-       * iOS on the other side ask the permissions at start.
+       * This method initialise the CaptureID Plugin and ask for runtimepermissions on Android and the permission on iOS 
        * @version 1.0.8
        * @param {string} message that get displayed inside of the Messagebox(Android-only)
        * @param {boolean} showTextMessage show the AlertDialog (Android-only)
@@ -1056,6 +1055,20 @@ function CortexDecoderLibrary() {
 
     exec(successCallback, errorCallback, 'CaptureIDDecoder', 'initCaptureID', [{ message, showTextMessage }]);
   };
+
+  /**
+   * Only iOS
+   * On iOS the decive start the App settings. 
+   */
+  CortexDecoderLibrary.prototype.iOS_showAppSettings = function (successCallback, errorCallback) {
+    if (errorCallback == null) { errorCallback = function () { }; }
+    if (typeof errorCallback != "function") { console.log("CortexDecoderLibrary.initCaptureID failure: failure parameter not a function"); return; }
+    if (typeof successCallback != "function") { console.log("CortexDecoderLibrary.initCaptureID failure: success callback parameter must be a function"); return; }
+
+    exec(successCallback, errorCallback, 'CaptureIDDecoder', 'iOS_showAppSettings');
+  };
+
+
 }
 var cortexdecoder = new CortexDecoderLibrary();
 module.exports = cortexdecoder;

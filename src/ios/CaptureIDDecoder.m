@@ -40,25 +40,57 @@
 
 #pragma mark - Cortex
 
--(void)initCaptureID:(CDVInvokedUrlCommand *)command {
-    self.CPID_decoder = [[CPIDiOSCaptureIDLibrary alloc]initWithUIview:self.webView];
-    NSDictionary *result = @{@"FunctionName": @"initCaptureID",
-                             @"error": @"",
-                             @"intValue": [[NSNumber alloc]initWithInt:0],
-                             @"stringValue": @"",
-                             @"boolValue": [[NSNumber alloc]initWithBool:YES],
-                             @"longValue": [[NSNumber alloc]initWithLong:0],
-                             @"floatValue": [[NSNumber alloc]initWithFloat:0.0],
-                             @"objValue": @""};
-    NSMutableArray *array = [NSMutableArray arrayWithObject:result];
+- (void)iOS_showAppSettings:(CDVInvokedUrlCommand *)command {
+    [self.CPID_decoder showAppSettings];
+    NSDictionary *resultDictionary = @{@"FunctionName": @"iOS_showAppSettings",
+                                       @"error": @"",
+                                       @"intValue": [[NSNumber alloc]initWithInt:0],
+                                       @"stringValue": @"",
+                                       @"boolValue": [[NSNumber alloc]initWithBool:YES],
+                                       @"longValue": [[NSNumber alloc]initWithLong:0],
+                                       @"floatValue": [[NSNumber alloc]initWithFloat:0.0],
+                                       @"objValue": @""};
+    NSMutableArray *array = [NSMutableArray arrayWithObject:resultDictionary];
     CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsArray:array];
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+}
+
+-(void)initCaptureID:(CDVInvokedUrlCommand *)command {
+    self.CPID_decoder = [[CPIDiOSCaptureIDLibrary alloc]initWithUIview:self.webView resultBlock:^(BOOL result) {
+        if(result) {
+            // the user has given the permission
+            NSDictionary *resultDictionary = @{@"FunctionName": @"initCaptureID",
+                                               @"error": @"",
+                                               @"intValue": [[NSNumber alloc]initWithInt:0],
+                                               @"stringValue": @"",
+                                               @"boolValue": [[NSNumber alloc]initWithBool:YES],
+                                               @"longValue": [[NSNumber alloc]initWithLong:0],
+                                               @"floatValue": [[NSNumber alloc]initWithFloat:0.0],
+                                               @"objValue": @""};
+            NSMutableArray *array = [NSMutableArray arrayWithObject:resultDictionary];
+            CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsArray:array];
+            [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+        } else {
+            // the user has not granted the permission
+            // we send error-callback
+            NSDictionary *resultDictionary = @{@"FunctionName": @"initCaptureID",
+                                               @"error": @"",
+                                               @"intValue": [[NSNumber alloc]initWithInt:0],
+                                               @"stringValue": @"We need the permission = Camera",
+                                               @"boolValue": [[NSNumber alloc]initWithBool:false],
+                                               @"longValue": [[NSNumber alloc]initWithLong:0],
+                                               @"floatValue": [[NSNumber alloc]initWithFloat:0.0],
+                                               @"objValue": @""};
+            NSMutableArray *array = [NSMutableArray arrayWithObject:resultDictionary];
+            CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:SWIFT_CDVCommandStatus_ERROR messageAsArray:array];
+            [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+        }
+    }];
 }
 
 #pragma mark - Version
 
 - (void)decoderVersion:(CDVInvokedUrlCommand *)command {
-    NSLog(@"decoderVersion");
     CDVPluginResult *pluginResult = nil;
     NSArray *res = [self.CPID_decoder decoderVersion];
     pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsArray:res];
@@ -66,7 +98,6 @@
 }
 
 -(void)decoderVersionLevel:(CDVInvokedUrlCommand *)command {
-    NSLog(@"decoderVersionLevel");
     CDVPluginResult *pluginResult = nil;
     NSArray *res = [self.CPID_decoder decoderVersionLevel];
     pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsArray:res];
@@ -74,7 +105,6 @@
 }
 
 - (void)getSdkVersion:(CDVInvokedUrlCommand *)command {
-    NSLog(@"getSdkVersion");
     CDVPluginResult *pluginResult = nil;
     NSArray *res = [self.CPID_decoder getSdkVersion];
     pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsArray:res];
@@ -82,7 +112,6 @@
 }
 
 -(void)libraryVersion:(CDVInvokedUrlCommand *)command {
-    NSLog(@"libraryVersion");
     CDVPluginResult *pluginResult = nil;
     NSArray *res = [self.CPID_decoder libraryVersion];
     pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsArray:res];
@@ -93,7 +122,6 @@
 #pragma mark - License activation
 
 -(void)activateLicense:(CDVInvokedUrlCommand *)command {
-    NSLog(@"activateLicense");
     self.CPID_licenseCallbackID = command.callbackId;
     __block CDVPluginResult* pluginResult = nil;
     NSDictionary* dict = [[command arguments] objectAtIndex:0];
@@ -114,14 +142,15 @@
         } else {
             //cant read license or is nil
             pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"Key is null"];
+            [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
         }
     } @catch (NSException* ex) {
          pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:[ex reason]];
+         [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
     }
 }
 
 - (void)activateEDKLicense:(CDVInvokedUrlCommand *)command {
-    NSLog(@"activateEDKLicense");
     __block CDVPluginResult* pluginResult = nil;
     self.CPID_licenseCallbackID = command.callbackId;
     NSDictionary* dict = [[command arguments] objectAtIndex:0];
@@ -154,7 +183,6 @@
 }
 
 - (void)isLicenseActivated:(CDVInvokedUrlCommand *)command {
-    NSLog(@"isLicenseActivated");
     CDVPluginResult *pluginResult = nil;
     NSArray * res = [self.CPID_decoder isLicenseActivated];
     pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsArray:res];
@@ -162,7 +190,6 @@
 }
 
 - (void)isLicenseExpired:(CDVInvokedUrlCommand *)command {
-    NSLog(@"isLicenseExpired");
     CDVPluginResult *pluginResult = nil;
     NSArray * res = [self.CPID_decoder isLicenseExpired];
     pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsArray:res];
@@ -175,7 +202,9 @@
 -(void)startCameraPreview:(CDVInvokedUrlCommand *)command {
     self.CPID_decoderCallbackID = command.callbackId;
     CDVPluginResult *pluginResult = nil;
-    NSArray * res = [self.CPID_decoder startCameraPreview];
+    NSArray * res = [self.CPID_decoder startCameraPreview:^(BOOL result) {
+        
+    }];
     pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsArray:res];
     [pluginResult setKeepCallbackAsBool:YES];
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
@@ -311,7 +340,6 @@
 //}
 
 -(void)closeMethode {
-    NSLog(@"Button pressed");
     [self.CPID_decoder stopCameraPreview];
     [self.CPID_decoder stopDecoding];
 //    [[CortexDecoderLibrary sharedObject] enableVideoCapture:NO];
@@ -338,7 +366,6 @@
 //}
 
 -(void)startDecoding:(CDVInvokedUrlCommand *)command {
-    NSLog(@"startDecoding");
     self.CPID_decoderCallbackID = command.callbackId;
     __block CDVPluginResult *pluginResult = nil;
     NSArray * res = [self.CPID_decoder startDecoder:^(NSArray * _Nonnull result) {
@@ -349,7 +376,6 @@
 }
 
 -(void)stopDecoding:(CDVInvokedUrlCommand *)command {
-    NSLog(@"stopDecoding");
     CDVPluginResult *pluginResult = nil;
     NSArray * res = [self.CPID_decoder stopDecoding];
     pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsArray:res];
@@ -358,7 +384,6 @@
 }
 
 - (void)stopCameraPreview:(CDVInvokedUrlCommand *)command {
-    NSLog(@"stopCameraPreview");
     CDVPluginResult *pluginResult = nil;
     NSArray * res = [self.CPID_decoder stopCameraPreview];
     pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsArray:res];
@@ -366,7 +391,6 @@
 }
 
 -(void)closeCamera:(CDVInvokedUrlCommand *)command {
-    NSLog(@"closeCamera");
     CDVPluginResult *pluginResult = nil;
     [self.CPID_decoder stopDecoding];
     [self.CPID_decoder stopCameraPreview];
@@ -375,7 +399,6 @@
 }
 
 -(void)captureCurrentImageInBuffer:(CDVInvokedUrlCommand *)command {
-    NSLog(@"captureCurrentImageInBuffer");
     NSDictionary* dict = [[command arguments] objectAtIndex:0];
     BOOL capture = [dict[@"enable"] boolValue];
     CDVPluginResult *pluginResult = nil;
@@ -385,7 +408,6 @@
 }
 
 -(void)closeSharedObject:(CDVInvokedUrlCommand *)command {
-    NSLog(@"closeSharedObject");
     CDVPluginResult *pluginResult = nil;
     NSArray * res = [self.CPID_decoder closeSharedObject];
     pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsArray:res];
@@ -406,7 +428,6 @@
 //}
 
 -(void)enableVibrateOnScan:(CDVInvokedUrlCommand *)command {
-    NSLog(@"enableVibrateOnScan");
     NSDictionary* dict = [[command arguments] objectAtIndex:0];
     BOOL vibrate = [dict[@"enable"] boolValue];
     CDVPluginResult *pluginResult = nil;
@@ -416,7 +437,6 @@
 }
 
 -(void)changeBeepPlayerSound:(CDVInvokedUrlCommand *)command {
-    NSLog(@"changeBeepPlayerSound");
     CDVPluginResult *pluginResult = nil;
     //todo get file name from the JSON - Array
     NSArray *res = [self.CPID_decoder changeSound:@""];
@@ -426,7 +446,6 @@
 
 -(void)enableScannedImageCapture:(CDVInvokedUrlCommand *)command {
     //enableScannedImageCapture is deprecated -> enableImageSaving with CD_ImageSavingType
-    NSLog(@"enableScannedImageCapture");
     NSDictionary* dict = [[command arguments] objectAtIndex:0];
     BOOL enable = [dict[@"enable"] boolValue];
     CDVPluginResult *pluginResult = nil;
@@ -439,7 +458,6 @@
 #pragma mark - Decoder
 
 -(void)lowContrastDecodingEnabled:(CDVInvokedUrlCommand *)command {
-    NSLog(@"lowContrastDecodingEnabled");
     NSDictionary* dict = [[command arguments] objectAtIndex:0];
     BOOL lowContrast = [dict[@"enable"] boolValue];
     CDVPluginResult *pluginResult = nil;
@@ -449,7 +467,6 @@
 }
 
 -(void) decoderTimeLimitInMilliseconds:(CDVInvokedUrlCommand*)command {
-    NSLog(@"decoderTimeLimitInMilliseconds");
     NSDictionary* dict = [[command arguments] objectAtIndex:0];
     int timeLimit = [dict[@"milliseconds"] intValue];
     CDVPluginResult *pluginResult = nil;
@@ -459,7 +476,6 @@
 }
 
 -(void) setDecoderResolution:(CDVInvokedUrlCommand*)command {
-    NSLog(@"setDecoderResolution");
     NSDictionary* dict = [[command arguments] objectAtIndex:0];
     NSString* decoderResolution = [dict[@"resolution"] stringValue];
     CDVPluginResult *pluginResult = nil;
@@ -478,7 +494,6 @@
 // Default is 1
 // Level = 1 - 20
 -(void) setNumberOfBarcodesToDecode:(CDVInvokedUrlCommand*)command {
-    NSLog(@"setNumberOfBarcodesToDecode");
     self.CPID_decoderCallbackID = command.callbackId;
     NSDictionary* dict = [[command arguments] objectAtIndex:0];
     int num = [dict[@"num"] intValue];
@@ -495,7 +510,6 @@
 // Default is 10
 // Value tolorance level = 0 - 10
 -(void) setDecoderToleranceLevel:(CDVInvokedUrlCommand*)command {
-    NSLog(@"setDecoderToleranceLevel");
     NSDictionary* dict = [[command arguments] objectAtIndex:0];
     int tolerancLevel = [dict[@"toleranceLevel"] intValue];
     CDVPluginResult *pluginResult = nil;
@@ -509,7 +523,6 @@
 }
 
 -(void) getLicensedSymbologies:(CDVInvokedUrlCommand*)command {
-    NSLog(@"getLicensedSymbologies");
     CDVPluginResult *pluginResult = nil;
     NSArray * res = [self.CPID_decoder getLicensedSymbologies];
     pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsArray:res];
@@ -519,7 +532,6 @@
 -(void) enableAllDecoders:(CDVInvokedUrlCommand*)command {
     NSDictionary* dict = [[command arguments] objectAtIndex:0];
     BOOL enable = [dict[@"enable"] boolValue];
-    NSLog(@"enableAllDecoders: %d", enable);
     NSArray * res = [self.CPID_decoder enableAllDecoders:enable];
     CDVPluginResult *pluginResult = nil;
     pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsArray:res];
@@ -530,7 +542,6 @@
 #pragma mark - Device
 
 -(void)setCameraType:(CDVInvokedUrlCommand *)command {
-    NSLog(@"setCameraType");
     CDVPluginResult *pluginResult = nil;
     NSDictionary* dict = [[command arguments] objectAtIndex:0];
     NSString *camera = dict[@"cameraType"];
@@ -540,7 +551,6 @@
 }
 
 -(void)getSupportedCameraTypes:(CDVInvokedUrlCommand *)command {
-    NSLog(@"getSupportedCameraTypes");
     CDVPluginResult *pluginResult = nil;
     NSArray *res = [self.CPID_decoder getSupportedCameraTypes];
     pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsArray:res];
@@ -567,7 +577,6 @@
 }
 
 -(void) setTorch:(CDVInvokedUrlCommand*)command {
-    NSLog(@"setTorch");
     self.CPID_decoderCallbackID = command.callbackId;
     CDVPluginResult *pluginResult = nil;
     NSDictionary* dict = [[command arguments] objectAtIndex:0];
@@ -579,7 +588,6 @@
 }
 
 -(void) currentSizeOfDecoderVideo:(CDVInvokedUrlCommand*)command {
-     NSLog(@"currentSizeOfDecoderVideo");
     CDVPluginResult *pluginResult = nil;
     NSArray *res = [self.CPID_decoder currentSizeOfDecoderVideo];
     pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsArray:res];
@@ -587,7 +595,6 @@
 }
 
 -(void) hasTorch:(CDVInvokedUrlCommand*)command {
-    NSLog(@"hasTorch");
     CDVPluginResult *pluginResult = nil;
     NSArray *res = [self.CPID_decoder hasTorch];
     pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsArray:res];
@@ -595,7 +602,6 @@
 }
 
 -(void) enableBeepPlayer:(CDVInvokedUrlCommand*)command {
-    NSLog(@"enableBeepPlayer");
     CDVPluginResult *pluginResult = nil;
     NSDictionary* dict = [[command arguments] objectAtIndex:0];
     BOOL beepPlayer = [dict[@"enable"]boolValue];
@@ -609,7 +615,6 @@
 #pragma mark - Region
 
 -(void) regionOfInterestLeft:(CDVInvokedUrlCommand*)command {
-    NSLog(@"regionOfInterestLeft");
     CDVPluginResult *pluginResult = nil;
     NSDictionary* dict = [[command arguments] objectAtIndex:0];
     int value = [dict[@"column"]intValue];
@@ -619,7 +624,6 @@
 }
 
 -(void) regionOfInterestTop:(CDVInvokedUrlCommand*)command {
-    NSLog(@"regionOfInterestTop");
     CDVPluginResult *pluginResult = nil;
     NSDictionary* dict = [[command arguments] objectAtIndex:0];
     int value = [dict[@"row"]intValue];
@@ -629,7 +633,6 @@
 }
 
 -(void) regionOfInterestWidth:(CDVInvokedUrlCommand*)command {
-    NSLog(@"regionOfInterestWidth");
     CDVPluginResult *pluginResult = nil;
     NSDictionary* dict = [[command arguments] objectAtIndex:0];
     int value = [dict[@"roiWidth"]intValue];
@@ -639,7 +642,6 @@
 }
 
 -(void) regionOfInterestHeight:(CDVInvokedUrlCommand*)command {
-    NSLog(@"regionOfInterestHeight");
     CDVPluginResult *pluginResult = nil;
     NSDictionary* dict = [[command arguments] objectAtIndex:0];
     int value = [dict[@"roiHeight"]intValue];
@@ -649,7 +651,6 @@
 }
 
 -(void) ensureRegionOfInterest:(CDVInvokedUrlCommand*)command {
-    NSLog(@"ensureRegionOfInterest");
     CDVPluginResult *pluginResult = nil;
     NSDictionary* dict = [[command arguments] objectAtIndex:0];
     BOOL enable = [dict[@"enable"]boolValue];
@@ -663,7 +664,6 @@
 
 
 -(void) setCameraButtons:(CDVInvokedUrlCommand*)command {
-    NSLog(@"setCameraButtons");
     self.CPID_decoderCallbackID = command.callbackId;
     CDVPluginResult *pluginResult = nil;
     pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:@"Not supported"];
@@ -672,7 +672,6 @@
 }
 
 -(void)showCrossHair:(CDVInvokedUrlCommand *)command {
-    NSLog(@"showCrossHair");
     self.CPID_decoderCallbackID = command.callbackId;
     CDVPluginResult *pluginResult = nil;
     NSDictionary* dict = [[command arguments] objectAtIndex:0];
@@ -683,7 +682,6 @@
 }
 
 -(void) toggleCamera:(CDVInvokedUrlCommand*)command {
-    NSLog(@"toggleCamera");
     self.CPID_decoderCallbackID = command.callbackId;
     CDVPluginResult *pluginResult = nil;
     NSArray *res = [self.CPID_decoder toggleCamera];
@@ -696,7 +694,6 @@
  Returns Error, because function is not supported from the captureID-Library
  */
 -(void) enableNativeZoom:(CDVInvokedUrlCommand*)command {
-    NSLog(@"enableNativeZoom");
     CDVPluginResult *pluginResult = nil;
     NSDictionary* dict = [[command arguments] objectAtIndex:0];
     BOOL enable = [dict[@"enable"]boolValue];
@@ -709,7 +706,6 @@
  Returns Error, because function is not supported from the captureID-Library
  */
 -(void) enableSeekBarZoom:(CDVInvokedUrlCommand*)command {
-    NSLog(@"enableSeekBarZoom");
     CDVPluginResult *pluginResult = nil;
     NSDictionary* dict = [[command arguments] objectAtIndex:0];
     BOOL enable = [dict[@"enable"]boolValue];
@@ -722,7 +718,6 @@
 #pragma mark - Augmentedreality
 
 -(void) enableAugmentedReality:(CDVInvokedUrlCommand*)command {
-    NSLog(@"enableAugmentedReality");
     CDVPluginResult *pluginResult = nil;
     NSDictionary* dict = [[command arguments] objectAtIndex:0];
     BOOL enable = [dict[@"enable"]intValue];
@@ -733,7 +728,6 @@
 }
 
 -(void) ar_showVisualizeBarcodes:(CDVInvokedUrlCommand*)command {
-    NSLog(@"ar_showVisualizeBarcodes");
     CDVPluginResult *pluginResult = nil;
     if(self.CPID_augmentedReality) {
         NSDictionary* dict = [[command arguments] objectAtIndex:0];
@@ -747,7 +741,6 @@
 }
 
 -(void) ar_detectBarcode:(CDVInvokedUrlCommand*)command {
-    NSLog(@"ar_detectBarcode");
     CDVPluginResult *pluginResult = nil;
     if(self.CPID_augmentedReality) {
         NSDictionary* dict = [[command arguments] objectAtIndex:0];
@@ -761,7 +754,6 @@
 }
 
 -(void) ar_showDetails:(CDVInvokedUrlCommand*)command {
-    NSLog(@"ar_showDetails");
     CDVPluginResult *pluginResult = nil;
     NSDictionary* dict = [[command arguments] objectAtIndex:0];
     NSString* data = dict[@"html"];
@@ -775,7 +767,6 @@
 
 // -- other Functions -- //
 -(void) CRD_Set:(CDVInvokedUrlCommand*)command {
-    NSLog(@"CRD_Set");
     CDVPluginResult *pluginResult = nil;
     NSArray *res = [self.CPID_decoder CRD_Set];
     pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsArray:res];
@@ -783,7 +774,6 @@
 }
 
 -(void) doDecode:(CDVInvokedUrlCommand*)command {
-    NSLog(@"doDecode");
     CDVPluginResult *pluginResult = nil;
     NSArray *res = [self.CPID_decoder doDecode];
     pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsArray:res];
@@ -791,7 +781,6 @@
 }
 
 -(void) enableFixedExposureMode:(CDVInvokedUrlCommand*)command {
-    NSLog(@"enableFixedExposureMode");
     CDVPluginResult *pluginResult = nil;
     NSDictionary* dict = [[command arguments] objectAtIndex:0];
     BOOL value = [dict[@"enabled"]boolValue];
@@ -802,7 +791,6 @@
 }
 
 -(void) generateDeviceID:(CDVInvokedUrlCommand*)command {
-    NSLog(@"generateDeviceID");
     CDVPluginResult *pluginResult = nil;
     NSArray *res = [self.CPID_decoder generateDeviceID];
     pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsArray:res];
@@ -810,7 +798,6 @@
 }
 
 -(void) getCameraPreview:(CDVInvokedUrlCommand*)command {
-    NSLog(@"getCameraPreview");
     CDVPluginResult *pluginResult = nil;
     NSArray *res = [self.CPID_decoder getCameraPreview];
     pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsArray:res];
@@ -818,7 +805,6 @@
 }
 
 -(void) getDecodeVal:(CDVInvokedUrlCommand*)command {
-    NSLog(@"getDecodeVal");
     CDVPluginResult *pluginResult = nil;
     NSArray *res = [self.CPID_decoder getDecodeVal];
     pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsArray:res];
@@ -826,7 +812,6 @@
 }
 
 -(void) getExposureTime:(CDVInvokedUrlCommand*)command {
-    NSLog(@"getExposureTime");
     CDVPluginResult *pluginResult = nil;
     NSArray *res = [self.CPID_decoder getExposureTime];
     pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsArray:res];
@@ -834,7 +819,6 @@
 }
 
 -(void) getFocusDistance:(CDVInvokedUrlCommand*)command {
-    NSLog(@"getFocusDistance");
     CDVPluginResult *pluginResult = nil;
     NSArray *res = [self.CPID_decoder getFocusDistance];
     pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsArray:res];
@@ -842,7 +826,6 @@
 }
 
 -(void) getMaxZoom:(CDVInvokedUrlCommand*)command {
-    NSLog(@"getMaxZoom");
     CDVPluginResult *pluginResult = nil;
     NSArray *res = [self.CPID_decoder getMaxZoom];
     pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsArray:res];
@@ -850,7 +833,6 @@
 }
 
 -(void) getSensitivityBoost:(CDVInvokedUrlCommand*)command {
-    NSLog(@"getSensitivityBoost");
     CDVPluginResult *pluginResult = nil;
     NSArray *res = [self.CPID_decoder getSensitivityBoost];
     pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsArray:res];
@@ -858,7 +840,6 @@
 }
 
 -(void) getSizeForROI:(CDVInvokedUrlCommand*)command {
-    NSLog(@"getSizeForROI");
     CDVPluginResult *pluginResult = nil;
     NSArray *res = [self.CPID_decoder getSizeForROI];
     pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsArray:res];
@@ -866,7 +847,6 @@
 }
 
 -(void) getSupportedFocusModes:(CDVInvokedUrlCommand*)command {
-    NSLog(@"getSupportedFocusModes");
     CDVPluginResult *pluginResult = nil;
     NSArray *res = [self.CPID_decoder getSupportedFocusModes];
     pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsArray:res];
@@ -874,7 +854,6 @@
 }
 
 -(void) getSupportedWhiteBalance:(CDVInvokedUrlCommand*)command {
-    NSLog(@"getSupportedWhiteBalance");
     CDVPluginResult *pluginResult = nil;
     NSArray *res = [self.CPID_decoder getSupportedWhiteBalance];
     pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsArray:res];
@@ -882,7 +861,6 @@
 }
 
 -(void) getZoomRatios:(CDVInvokedUrlCommand*)command {
-    NSLog(@"getZoomRatios");
     CDVPluginResult *pluginResult = nil;
     NSArray *res = [self.CPID_decoder getZoomRatios];
     pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsArray:res];
@@ -890,7 +868,6 @@
 }
 
 -(void) loadLicenseFile:(CDVInvokedUrlCommand*)command {
-    NSLog(@"loadLicenseFile");
     CDVPluginResult *pluginResult = nil;
     NSDictionary* dict = [[command arguments] objectAtIndex:0];
     NSString *filename = [dict[@"fileContent"]stringValue];
@@ -900,7 +877,6 @@
 }
 
 -(void) playBeepSound:(CDVInvokedUrlCommand*)command {
-    NSLog(@"playBeepSound");
     CDVPluginResult *pluginResult = nil;
     NSArray *res = [self.CPID_decoder playBeepSound];
     pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsArray:res];
@@ -908,7 +884,6 @@
 }
 
 -(void) setAutoFocusResetByCount:(CDVInvokedUrlCommand*)command {
-    NSLog(@"setAutoFocusResetByCount");
     CDVPluginResult *pluginResult = nil;
     NSDictionary* dict = [[command arguments] objectAtIndex:0];
     BOOL value = [dict[@"enabled"]boolValue];
@@ -918,7 +893,6 @@
 }
 
 -(void) setCameraZoom:(CDVInvokedUrlCommand*)command {
-    NSLog(@"setCameraZoom");
     CDVPluginResult *pluginResult = nil;
     NSDictionary* dict = [[command arguments] objectAtIndex:0];
     BOOL enable = [dict[@"enabled"]boolValue];
@@ -929,7 +903,6 @@
 }
 
 -(void) setEncodingCharsetName:(CDVInvokedUrlCommand*)command {
-    NSLog(@"setEncodingCharsetName");
     CDVPluginResult *pluginResult = nil;
     NSDictionary* dict = [[command arguments] objectAtIndex:0];
     NSString *charset = dict[@"charsetName"];
@@ -939,7 +912,6 @@
 }
 
 -(void) setExactlyNBarcodes:(CDVInvokedUrlCommand*)command {
-    NSLog(@"setExactlyNBarcodes");
     CDVPluginResult *pluginResult = nil;
     NSDictionary* dict = [[command arguments] objectAtIndex:0];
     BOOL value = [dict[@"enable"]boolValue];
@@ -949,7 +921,6 @@
 }
 
 -(void) setExposureSensitivity:(CDVInvokedUrlCommand*)command {
-    NSLog(@"setExposureSensitivity");
     CDVPluginResult *pluginResult = nil;
     NSDictionary* dict = [[command arguments] objectAtIndex:0];
     NSNumber *value = [[NSNumber alloc] initWithInt:[dict[@"iso"]intValue]];
@@ -963,7 +934,6 @@
 }
 
 -(void) setExposureTime:(CDVInvokedUrlCommand*)command {
-    NSLog(@"setExposureTime");
     CDVPluginResult *pluginResult = nil;
     NSDictionary* dict = [[command arguments] objectAtIndex:0];
     NSNumber *value = [[NSNumber alloc]initWithInt:[dict[@"ep"]intValue]];
@@ -977,7 +947,6 @@
 }
 
 -(void) setFocusDistance:(CDVInvokedUrlCommand*)command {
-    NSLog(@"setFocusDistance");
     CDVPluginResult *pluginResult = nil;
     NSDictionary* dict = [[command arguments] objectAtIndex:0];
     NSNumber *value = [[NSNumber alloc]initWithInt:[dict[@"distance"]intValue]];
@@ -987,7 +956,6 @@
 }
 
 -(void) setWhiteBalance:(CDVInvokedUrlCommand*)command {
-    NSLog(@"setWhiteBalance");
     CDVPluginResult *pluginResult = nil;
     NSDictionary* dict = [[command arguments] objectAtIndex:0];
     BOOL enable = [dict[@"enable"]boolValue];
@@ -998,7 +966,6 @@
 }
 
 -(void) stringFromSymbologyType:(CDVInvokedUrlCommand*)command {
-    NSLog(@"stringFromSymbologyType");
     CDVPluginResult *pluginResult = nil;
     NSDictionary* dict = [[command arguments] objectAtIndex:0];
     NSString *value = [dict[@"type"]stringValue];
@@ -1008,7 +975,6 @@
 }
 
 -(void) CameraTypeValueOf:(CDVInvokedUrlCommand*)command {
-    NSLog(@"CameraTypeValueOf");
     CDVPluginResult *pluginResult = nil;
     NSDictionary* dict = [[command arguments] objectAtIndex:0];
     NSString *value = [dict[@"name"]stringValue];
@@ -1018,7 +984,6 @@
 }
 
 -(void) CameraTypeValues:(CDVInvokedUrlCommand*)command {
-    NSLog(@"CameraTypeValues");
     CDVPluginResult *pluginResult = nil;
     NSArray *res = [self.CPID_decoder CameraTypeValues];
     pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsArray:res];
@@ -1026,7 +991,6 @@
 }
 
 -(void) FocusValueOf:(CDVInvokedUrlCommand*)command {
-    NSLog(@"FocusValueOf");
     CDVPluginResult *pluginResult = nil;
     NSDictionary* dict = [[command arguments] objectAtIndex:0];
     NSString *value = [dict[@"name"]stringValue];
@@ -1036,7 +1000,6 @@
 }
 
 -(void) FocusValues:(CDVInvokedUrlCommand*)command {
-    NSLog(@"FocusValues");
     CDVPluginResult *pluginResult = nil;
     NSArray *res = [self.CPID_decoder FocusValues];
     pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsArray:res];
@@ -1044,7 +1007,6 @@
 }
 
 -(void) SymbologyTypeValueOf:(CDVInvokedUrlCommand*)command {
-    NSLog(@"SymbologyTypeValueOf");
     CDVPluginResult *pluginResult = nil;
     NSDictionary* dict = [[command arguments] objectAtIndex:0];
     NSString *value = [dict[@"name"]stringValue];
@@ -1054,7 +1016,6 @@
 }
 
 -(void) SymbologyTypeValues:(CDVInvokedUrlCommand*)command {
-    NSLog(@"SymbologyTypeValues");
     CDVPluginResult *pluginResult = nil;
     NSArray *res = [self.CPID_decoder SymbologyTypeValues];
     pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsArray:res];
@@ -1062,7 +1023,6 @@
 }
 
 -(void) setSymbologyProperties:(CDVInvokedUrlCommand*)command {
-    NSLog(@"setSymbologyProperties");
     self.CPID_decoderCallbackID = command.callbackId;
     CDVPluginResult *pluginResult = nil;
     

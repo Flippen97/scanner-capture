@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
     id="cordova-plugin-captureid"
-    version="1.0.17">
+    version="1.0.22">
     <name>Code BarcodeScanner</name>
     <description>Barcode Decoder Plugin for Cortex Decoder Library</description>
     <license>MIT</license>
@@ -41,11 +41,11 @@
         </feature>
       </config-file>
       <config-file target="AndroidManifest.xml" parent="/manifest">
-        <uses-sdk android:minSdkVersion="19" android:targetSdkVersion="19" />
         <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
         <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
         <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
         <uses-permission android:name="android.permission.INTERNET" />
+        <uses-feature android:name="android.hardware.camera" />
         <uses-feature android:name="android.hardware.camera.autofocus" />
         <uses-feature android:name="android.hardware.sensor.accelerometer" />
         <uses-permission android:name="android.permission.CAMERA" />
