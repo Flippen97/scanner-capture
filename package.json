@@ -1,6 +1,6 @@
 {
   "name": "cordova-plugin-captureid",
-  "version": "1.0.22",
+  "version": "1.0.23",
   "cordova": {
     "id": "cortexdecoder-code-scanner",
     "platforms": [
@@ -22,7 +22,7 @@
     "ecosystem:cordova",
     "cordova-android"
   ],
-  "author": "Uwe Hoppe, Christian Jung",
+  "author": "Uwe Hoppe",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/P4IT/cordova-plugin-cortex-decoder/issues"
