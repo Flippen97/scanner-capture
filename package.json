@@ -1,6 +1,6 @@
 {
   "name": "cordova-plugin-captureid",
-  "version": "1.0.24",
+  "version": "1.0.32",
   "cordova": {
     "id": "cortexdecoder-code-scanner",
     "platforms": [
