@@ -13,15 +13,10 @@
 
 @property (nonatomic, strong)UIView * _Nonnull rootView;
 
-//-(_Nonnull instancetype)initWithUIview:(UIView * _Nonnull)rootView;
--(instancetype)initWithUIview:(UIView*)rootView resultBlock:(void (^ _Nonnull)(BOOL result))resultBlock;
+-(_Nonnull instancetype)initWithUIview:(UIView * _Nonnull)rootView;
+//-(_Nonnull instancetype)init;
 
 #pragma mark - License
-
-/*!
- @discussion Show the App settings, this function is used by the developer, if the camera-permission is not granted.
- */
--(void) showAppSettings;
 
 /*!
  @discussion Activate the CortexDecoderLicense in CortexDecoder we need to check the Preferences for the Key.
@@ -44,11 +39,10 @@
  */
 -(void) activateEDKLicenseWithKey:(NSString * _Nonnull)edkKey customerID:(NSString * _Nonnull)customerID resultHandler:(nonnull void (^)(NSArray * _Nonnull result))resultHandler;
 
-/*!
- @discussion Check the camera permission
- @param resultBlock (void (^ _Nonnull)(BOOL result)) a callback that return true or false;
- */
--(void) checkCameraPermissionWithBlock:(void (^ _Nonnull)(BOOL result))resultBlock;
+///**
+// @discussion Activate the CortexDecoderLicense in the CortexDecoder.
+// */
+//-(NSArray * _Nonnull) activateLicense;
 
 /**
  @discussion Check if license is activated
