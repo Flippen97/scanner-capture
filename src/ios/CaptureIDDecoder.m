@@ -82,7 +82,7 @@
                                                @"floatValue": [[NSNumber alloc]initWithFloat:0.0],
                                                @"objValue": @""};
             NSMutableArray *array = [NSMutableArray arrayWithObject:resultDictionary];
-            CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsArray:array];
+            CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:SWIFT_CDVCommandStatus_ERROR messageAsArray:array];
             [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
         }
     }];
